@@ -34,7 +34,7 @@ public class Server {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(12345);
         Server server = new Server(serverSocket);
         server.startServer();

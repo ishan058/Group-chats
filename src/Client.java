@@ -38,6 +38,46 @@ public class Client {
     }
 
     public void listenForMessage() {
-        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String messageFromGropuChat;
+
+                while (socket.isConnected()) {
+                    try {
+                        messageFromGropuChat =bufferedReader.readLine();
+                        System.out.println(messageFromGropuChat);
+                    } catch (IOException e) {
+                        closeEverything(socket, bufferedReader, bufferedWriter);
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
+        try {
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            } else if (bufferedWriter != null) {
+                bufferedWriter.close();
+            } else if (socket != null) {
+                socket.close();
+            } else {
+                System.out.println("everything seems good");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your username for the group chat: ") ;
+        String username = scanner.nextLine();
+        Socket socket = new Socket("localhost", 12345);
+        Client client = new Client(socket, username);
+        client.listenForMessage();
+        client.sendMessage();
     }
 }
